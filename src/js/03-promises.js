@@ -27,6 +27,11 @@ btnCreatePromises.addEventListener("click", (e) => {
   const step = Number(inputStep.value);
   const amount = Number(inputAmount.value);
 
+  if (step < 0 || delay < 0 || amount <= 0) {
+    Notify.failure('Invalid input values. All values must be positive');
+    return;
+  };
+
   for (let position = 1; position <= amount; position++) {
     const newDelay = delay + (position - 1) * step;
     createPromise(position, newDelay).then(({position, delay}) => {

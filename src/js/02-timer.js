@@ -4,6 +4,7 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const pickerInput = document.querySelector('#datetime-picker');
 const startBtn = document.querySelector('button[data-start]');
+const resetBtn = document.querySelector('button[data-reset]');
 
 const daysCounter = document.querySelector('[data-days]');
 const hoursCounter = document.querySelector('[data-hours]');
@@ -13,6 +14,7 @@ const secondsCounter = document.querySelector('[data-seconds]');
 
 let selectedDate = null;
 let intervalId = null;
+resetBtn.disabled = true;
 startBtn.disabled = true;
 
 
@@ -25,9 +27,12 @@ const options = {
     selectedDate = selectedDates[0];
     if (selectedDates[0] <= Date.now()) {
       Notify.failure("Please choose a date in the future");
-    } else {startBtn.disabled = false;};
+    } else {
+      startBtn.disabled = false;
+    };
   },
 };
+
 
 flatpickr(pickerInput, options);
 
@@ -56,7 +61,24 @@ const timer = {
 startBtn.addEventListener("click", () => {
   timer.start();
   pickerInput._flatpickr.destroy();
+  resetBtn.disabled = false;
+  startBtn.disabled = true;
+  pickerInput.disabled = true;
  });
+
+resetBtn.addEventListener("click", () => {
+  clearInterval(intervalId);
+  timer.isActive = false;
+  startBtn.disabled = false;
+  resetBtn.disabled = true;
+  pickerInput.value = "";
+  flatpickr(pickerInput, options);
+  pickerInput.disabled = false;
+  daysCounter.textContent = "00";
+  hoursCounter.textContent = "00";
+  minutesCounter.textContent = "00";
+  secondsCounter.textContent = "00";
+});
 
 
 function convertMs(ms) {
